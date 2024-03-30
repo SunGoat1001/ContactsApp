@@ -46,4 +46,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             tvName = (TextView) view.findViewById(R.id.tv_name);
         }
     }
+
+    public void setFilteredList(ArrayList<Contact> filteredList) {
+        this.contactList = filteredList;
+        notifyDataSetChanged();
+    }
 }
