@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    private ArrayList<Contact> contacList;
+    private ArrayList<Contact> contactList;
     private ContactsAdapter contactAdapter;
 
     private AppDatabase appDatabase;
@@ -42,24 +42,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         binding.rvContacts.setLayoutManager(new LinearLayoutManager(this));
-        contacList = new ArrayList<Contact>();
-        contactAdapter = new ContactsAdapter(contacList);
+        contactList = new ArrayList<Contact>();
+        contactAdapter = new ContactsAdapter(contactList);
         binding.rvContacts.setAdapter(contactAdapter);
 
-        contacList.add(new Contact("Le Pham Ngoc Tien", "0987654321", "Tien@gmail.com"));
-        contacList.add(new Contact("Chau Nha Thy", "09876521", "Thy@gmail.com"));
-        contactAdapter.notifyDataSetChanged();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase = AppDatabase.getInstance(getApplicationContext());
+                contactDao = appDatabase.contactDao();
 
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                appDatabase = AppDatabase.getInstance(getApplicationContext());
-//                contactDao = appDatabase.contactDao();
-//
-//                contactDao.insert(new Contact("Le Pham Ngoc Tien", "0987654321", "Tien@gmail.com"));
-//                contactDao.insert(new Contact("Chau Nha Thy", "09876521", "Thy@gmail.com"));
-//            }
-//        });
+                for (Contact contact : contactDao.getAll()) {
+                    contactList.add(contact);
+                }
+                contactAdapter.notifyDataSetChanged();
+            }
+        });
 
         binding.addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
